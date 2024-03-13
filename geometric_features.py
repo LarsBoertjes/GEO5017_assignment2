@@ -1,6 +1,8 @@
 import numpy as np
 import math
 from read_data import get_pointclouds, read_point_clouds
+import matplotlib.pyplot as plt
+from plotting_features import plot_distributions
 
 
 def compute_eigen(pointcloud):
@@ -84,13 +86,7 @@ for eigenvalues in eigenvalues_pointclouds:
     surface_variation.append(geometricFeatures[5])
     sphericity.append(geometricFeatures[6])
 
+features = [omnivariance, sphericity, planarity]
+feature_names = ['Omnivariance', 'Sphericity', 'Planarity']
 
-print(len(pointclouds))
-print(len(labels))
-print(len(omnivariance))
-print(len(eigenentropy))
-print(len(anisotropy))
-print(len(planarity))
-print(len(linearity))
-print(len(surface_variation))
-print(len(sphericity))
+plot_distributions(features, labels, feature_names)
