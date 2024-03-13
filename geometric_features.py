@@ -86,7 +86,8 @@ for eigenvalues in eigenvalues_pointclouds:
     surface_variation.append(geometricFeatures[5])
     sphericity.append(geometricFeatures[6])
 
-features = [omnivariance, sphericity, planarity]
-feature_names = ['Omnivariance', 'Sphericity', 'Planarity']
 
+# plot the feature distributions for each label
+features = [omnivariance, eigenentropy, anisotropy, planarity, linearity, surface_variation, sphericity]
+feature_names = ['Omnivariance', 'Eigenentropy', 'Anisotropy', 'Planarity', 'Linearity', 'Surface Variation', 'Sphericity']
 plot_distributions(features, labels, feature_names)
