@@ -18,7 +18,7 @@ X = iris.data[:, :2]
 y = iris.target
 
 # SVM regularization parameter
-C = 1.0  
+C = 100.0
 # Initialize a sequence of svc models. You can play with the hyperparameters
 models = (
     svm.SVC(kernel="linear", C=C),
