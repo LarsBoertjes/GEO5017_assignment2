@@ -91,10 +91,10 @@ for eigenvalues in eigenvalues_pointclouds:
 
 
 # plot the feature distributions for each label
-features = [_sum, omnivariance, eigenentropy, linearity, planarity, sphericity, anisotropy, verticality]
+features = [_sum, omnivariance, eigenentropy, linearity, planarity, sphericity, anisotropy]
 feature_names = ['Sum', 'Omnivariance', 'Eigenentropy', 'Linearity',
-                 'Planarity', 'Sphericity', 'Anisotropy', 'Verticality']
-#plot_distributions(features, labels, feature_names)
+                 'Planarity', 'Sphericity', 'Anisotropy']
+plot_distributions(features, labels, feature_names)
 
 # calculate within and between scatter matrices
 
