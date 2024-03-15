@@ -3,6 +3,7 @@ import math
 from read_data import get_pointclouds, read_point_clouds
 import matplotlib.pyplot as plt
 from plotting_features import plot_distributions
+from feature_selection import compute_scatter_matrices, compute_trace_ratio
 
 
 def compute_eigen(pointcloud):
@@ -28,12 +29,17 @@ def compute_eigen(pointcloud):
     return eigenvalues, eigenvectors
 
 
-def geometric_features(eigenvalues):
+def geometric_features(eigenvalues, eigenvectors):
     """
+    Input: eigenvalues of object
+
     takes in eigenvalues and returns in following order geometric features:
-    sum, omnivariance, eigenentropy, anisotropy, planarity, linearity, surface_variation, sphericity
+    sum, omnivariance, eigenentropy, linearity, planarity, sphericity,
+    anisotropy, verticality
     """
     e1, e2, e3 = eigenvalues[0], eigenvalues[1], eigenvalues[2]
+    v1, v2, v3 = eigenvectors[0], eigenvectors[1], eigenvectors[2]
+    ez = [0, 0, 1]
 
     _sum = e1 + e2 + e3
 
@@ -48,17 +54,13 @@ def geometric_features(eigenvalues):
             (e3 / _sum) * math.log(e3 / _sum)
         )
 
-    anisotropy = (e1 - e3) / e1
-
-    planarity = (e2 - e3) / e1
-
     linearity = (e1 - e2) / e1
-
-    surface_variation = e3 / (e1 + e2 + e3)
-
+    planarity = (e2 - e3) / e1
     sphericity = e3 / e1
+    anisotropy = (e1 - e3) / e1
+    verticality = 1 - abs(np.dot(ez, v3))
 
-    return omnivariance, eigenentropy, anisotropy, planarity, linearity, surface_variation, sphericity
+    return _sum, omnivariance, eigenentropy, linearity, planarity, sphericity, anisotropy, verticality
 
 
 #  importing of pointcloud and labels array
@@ -74,20 +76,31 @@ for pointcloud in pointclouds:
     eigenvectors_pointclouds.append(eigenvectors)
 
 # compute geometric features
-omnivariance, eigenentropy, anisotropy, planarity, linearity, surface_variation, sphericity = [], [], [], [], [], [], []
+_sum, omnivariance, eigenentropy, linearity, planarity, sphericity, anisotropy, verticality = [], [], [], [], [], [], [], []
 
 for eigenvalues in eigenvalues_pointclouds:
-    geometricFeatures = geometric_features(eigenvalues)
-    omnivariance.append(geometricFeatures[0])
-    eigenentropy.append(geometricFeatures[1])
-    anisotropy.append(geometricFeatures[2])
-    planarity.append(geometricFeatures[3])
-    linearity.append(geometricFeatures[4])
-    surface_variation.append(geometricFeatures[5])
-    sphericity.append(geometricFeatures[6])
+    geometricFeatures = geometric_features(eigenvalues, eigenvectors)
+    _sum.append(geometricFeatures[0])
+    omnivariance.append(geometricFeatures[1])
+    eigenentropy.append(geometricFeatures[2])
+    linearity.append(geometricFeatures[3])
+    planarity.append(geometricFeatures[4])
+    sphericity.append(geometricFeatures[5])
+    anisotropy.append(geometricFeatures[6])
+    verticality.append(geometricFeatures[7])
 
 
 # plot the feature distributions for each label
-features = [omnivariance, eigenentropy, anisotropy, planarity, linearity, surface_variation, sphericity]
-feature_names = ['Omnivariance', 'Eigenentropy', 'Anisotropy', 'Planarity', 'Linearity', 'Surface Variation', 'Sphericity']
-plot_distributions(features, labels, feature_names)
+features = [_sum, omnivariance, eigenentropy, linearity, planarity, sphericity, anisotropy, verticality]
+feature_names = ['Sum', 'Omnivariance', 'Eigenentropy', 'Linearity',
+                 'Planarity', 'Sphericity', 'Anisotropy', 'Verticality']
+#plot_distributions(features, labels, feature_names)
+
+# calculate within and between scatter matrices
+
+Sw, Sb = compute_scatter_matrices(features, labels)
+
+# calculate trace ratio
+trace_ratio = compute_trace_ratio(Sw, Sb)
+print(trace_ratio)
+
