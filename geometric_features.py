@@ -103,4 +103,3 @@ Sw, Sb = compute_scatter_matrices(features, labels)
 # calculate trace ratio
 trace_ratio = compute_trace_ratio(Sw, Sb)
 print(trace_ratio)
-

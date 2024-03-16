@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.cm import viridis
 
 
 def plot_distributions(features, labels, feature_names):
@@ -8,8 +7,11 @@ def plot_distributions(features, labels, feature_names):
 
     fig, axs = plt.subplots(5, len(features), figsize=(10*len(features), 20), sharex=False)
 
-    # Define the colors using the Viridis colormap
-    colors = viridis(np.linspace(0, 1, len(features)))
+    normalized_values = np.linspace(0, 1, len(features))
+
+    viridis_cmap = plt.get_cmap('viridis')
+
+    colors = viridis_cmap(normalized_values)
 
     for j, (feature, feature_name, color) in enumerate(zip(features, feature_names, colors)):
         overall_min = min(min(feature[start:end]) for start, end in ranges)
