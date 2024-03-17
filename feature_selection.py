@@ -71,7 +71,7 @@ def forward_search(feature_names, features, labels, d):
                 best_feature_index = i
                 best_feature_name = feature_names[i]
 
-        # Add the feature that provided the best improvement
+        # add the feature that provided the best improvement
         if best_feature_index is not None:
             current_set_indices.append(best_feature_index)
             current_set_names.append(best_feature_name)
