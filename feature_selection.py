@@ -45,3 +45,66 @@ def compute_trace_ratio(Sw, Sb):
     trace_Sb = np.trace(Sb)
     return trace_Sb / trace_Sw
 
+
+def forward_search(feature_names, features, labels, d):
+    """
+    Based on lecture notes 08, p7
+    """
+    current_set_indices = []
+    current_set_names = []
+
+    while len(current_set_indices) < d:
+        best_feature_index = None
+        best_feature_name = None
+        best_trace_ratio = -float('inf')
+
+        for i, feature in enumerate(features):
+            if i in current_set_indices:
+                continue
+
+            # test adding the current feature to the set
+            Sw, Sb = compute_scatter_matrices([features[j] for j in current_set_indices + [i]], labels)
+            trace_ratio = compute_trace_ratio(Sw, Sb)
+
+            if trace_ratio > best_trace_ratio:
+                best_trace_ratio = trace_ratio
+                best_feature_index = i
+                best_feature_name = feature_names[i]
+
+        # Add the feature that provided the best improvement
+        if best_feature_index is not None:
+            current_set_indices.append(best_feature_index)
+            current_set_names.append(best_feature_name)
+
+    return current_set_names
+
+
+def backward_search(feature_names, features, labels, d):
+    """
+    based on lecture notes 08, p7
+    """
+    current_set_indices = list(range(len(features)))
+    current_set_names = feature_names.copy()
+
+    while len(current_set_indices) > d:
+        worst_feature_index = None
+        worst_feature_name = None
+        best_trace_ratio = -float('inf')
+
+        for i in current_set_indices:
+            test_set_indices = [idx for idx in current_set_indices if idx != i]
+            test_set_features = [features[j] for j in test_set_indices]
+
+            Sw, Sb = compute_scatter_matrices(test_set_features, labels)
+            trace_ratio = compute_trace_ratio(Sw, Sb)
+
+            if trace_ratio > best_trace_ratio:
+                best_trace_ratio = trace_ratio
+                worst_feature_index = i
+                worst_feature_name = feature_names[i]
+
+        if worst_feature_index is not None:
+            current_set_indices.remove(worst_feature_index)
+            current_set_names.remove(worst_feature_name)
+
+    return current_set_names
