@@ -1,8 +1,6 @@
 import numpy as np
 import math
 from read_data import read_point_clouds
-from plotting_features import plot_distributions, plot_scatter_matrices
-from feature_selection import compute_scatter_matrices, compute_trace_ratio, forward_search, backward_search
 
 
 def compute_eigen(pointcloud):
