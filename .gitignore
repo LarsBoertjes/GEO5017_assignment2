@@ -3,3 +3,4 @@
 .idea/GEO5017_assignment2.iml
 *.xml
 __pycache__/plotting_features.cpython-311.pyc
+/__pycache__
