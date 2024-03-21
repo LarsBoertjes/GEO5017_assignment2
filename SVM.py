@@ -5,33 +5,12 @@ import numpy as np
 import sklearn.model_selection as model_selection
 from geometric_features import extract_geometric_features
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from extracting_features import feature_extraction, data_loading
 
-def dataset():
-    pc = point_clouds_for_classification('data')
-
-    dataset = np.zeros((len(pc[1]), 4))
-
-    all_features = extract_geometric_features()[0]
-
-    relative_heights = []
-    for height in pc[2]:
-        relative_heights.append(max(height) - min(height))
-
-    dataset[:, 0] = all_features[2]
-    dataset[:, 1] = all_features[5]
-    dataset[:, 2] = all_features[6]
-    dataset[:, 3] = relative_heights
-
-    labels = pc[1]
-
-    return dataset, labels
-
-# read dataset
-X, y = dataset()
-
-
+ID, X, y = data_loading()
 X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, train_size=0.60,
-                                                                    test_size=0.40, random_state=101)
+                                                                    test_size=0.40, random_state=42)
 
 # rbf = svm.SVC(kernel='rbf', gamma=0.1, C=1.0).fit(X_train, y_train)
 # poly = svm.SVC(kernel='poly', degree=2, gamma=0.1, coef0=1, C=1).fit(X_train, y_train)

@@ -1,9 +1,10 @@
 import numpy as np
 import math
-from read_data import read_point_clouds, get_pointclouds
+from read_data import get_pointclouds
 from plotting_features import plot_distributions
 import scipy.spatial as spatial
 from bbox import minBoundingRect
+from tqdm import tqdm
 
 
 def geometric_features(pc):
@@ -41,12 +42,12 @@ def geometric_features(pc):
 def extract_geometric_features():
     point_clouds = get_pointclouds()
     (height_object, area_bbox, area_oriented, aspect_ratio, avg_density_m2, avg_density_m3, convex_area,
-     diff_con_mbbox, distance_z, distance_xy) = [], [], [], [], [], [], [], [], [], []
+     shape_index, distance_z, distance_xy) = [], [], [], [], [], [], [], [], [], []
 
     features = []
 
     for label, clouds in point_clouds.items():
-        for cloud in clouds:
+        for cloud in tqdm(clouds):
             pc = cloud['point_cloud']
             feat = geometric_features(pc)
             height_object.append(feat[0])
@@ -56,7 +57,7 @@ def extract_geometric_features():
             avg_density_m2.append(feat[4])
             avg_density_m3.append(feat[5])
             convex_area.append(feat[6])
-            diff_con_mbbox.append(feat[7])
+            shape_index.append(feat[7])
             distance_z.append(feat[8])
             distance_xy.append(feat[9])
 
@@ -67,35 +68,13 @@ def extract_geometric_features():
     features.append(avg_density_m2)
     features.append(avg_density_m3)
     features.append(convex_area)
-    features.append(diff_con_mbbox)
+    features.append(shape_index)
     features.append(distance_z)
     features.append(distance_xy)
 
     return features
 
-# # compute geometric features
-# (height_object, area_bbox, area_oriented, aspect_ratio, avg_density_m2, avg_density_m3, convex_area,
-#  diff_con_mbbox, distance_z, distance_xy) = [], [], [], [], [], [], [], [], [], []
-#
-# labels = []
-#
-# for label, clouds in point_clouds.items():
-#     for cloud in clouds:
-#         pc = cloud['point_cloud']
-#         features = geometric_features_not_eigen(pc)
-#         height_object.append(features[0])
-#         area_bbox.append(features[1])
-#         area_oriented.append(features[2])
-#         aspect_ratio.append(features[3])
-#         avg_density_m2.append(features[4])
-#         avg_density_m3.append(features[5])
-#         convex_area.append(features[6])
-#         diff_con_mbbox.append(features[7])
-#         distance_z.append(features[8])
-#         distance_xy.append(features[9])
-#         labels.append(label)
-#
-#
+
 # # plot the feature distributions for each label
 # features = [height_object, area_bbox, area_oriented, aspect_ratio, avg_density_m2, avg_density_m3, convex_area,
 #  diff_con_mbbox, distance_z, distance_xy]

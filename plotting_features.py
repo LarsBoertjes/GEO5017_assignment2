@@ -56,7 +56,7 @@ def plot_scatter_matrix(features, matrix):
     # Add text annotations for each cell in the heatmap with color contrast
     for (i, j), val in np.ndenumerate(matrix):
         color = 'white' if matrix[i, j] < (matrix.max() - matrix.min()) / 2 else 'black'
-        ax.text(j, i, f'{val:.2f}', ha='center', va='center', color=color)
+        ax.text(j, i, f'{val:.2f}', ha='center', va='center', color=color, fontsize=5)
 
     # Set the title and display the plot
     plt.title('Scatter Matrix')
@@ -89,7 +89,7 @@ def plot_scatter_matrices(features, within_class_matrix, between_class_matrix):
     for matrix, ax in zip([within_class_matrix, between_class_matrix], axes):
         for (i, j), val in np.ndenumerate(matrix):
             color = 'white' if val < (matrix.max() - matrix.min()) / 2 else 'black'
-            ax.text(j, i, f'{val:.2f}', ha='center', va='center', color=color)
+            ax.text(j, i, f'{val:.2f}', ha='center', va='center', color=color, fontsize=5)
 
     plt.tight_layout()
     plt.show()

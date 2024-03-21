@@ -8,7 +8,7 @@ def compute_scatter_matrices(features, labels):
     """
 
     # create matrix with each row a sample and each column a feature
-    feature_matrix = np.column_stack(features)
+    feature_matrix = np.array(features)
     num_features = feature_matrix.shape[1]
 
     # get unique classes and their indices

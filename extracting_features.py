@@ -32,7 +32,7 @@ def feature_extraction(data_path):
 
     for idx, (label, row) in enumerate(zip(labels, outputs)):
         # Calculate ID based on the index with leading zeros
-        ID = str(idx).zfill(3)
+        ID = idx
         formatted_row = [ID, label_mapping[label]] + list(row)
         formatted_data.append(formatted_row)
 
@@ -56,7 +56,7 @@ def data_loading(data_file='data.txt'):
     data = np.loadtxt(data_file, dtype=np.float32, delimiter=',', comments='#')
 
     # extract object ID, feature X and label Y
-    ID = data[:, 1].astype(np.int32)
+    ID = data[:, 0].astype(np.int32)
     y = data[:, 1].astype(np.int32)
     X = data[:, 2:].astype(np.float32)
 

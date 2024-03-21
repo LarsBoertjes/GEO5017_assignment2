@@ -1,7 +1,7 @@
 import numpy as np
 import math
 from read_data import read_point_clouds
-
+from tqdm import tqdm
 
 def compute_eigen(pointcloud):
     """" Computes the eigenvalues for a pointcloud based on the covariance matrix of the distribution of the points
@@ -67,7 +67,7 @@ def extract_eigen_features():
     eigenvalues_pointclouds = []
     eigenvectors_pointclouds = []
 
-    for pointcloud in pointclouds:
+    for pointcloud in tqdm(pointclouds):
         eigenvalues, eigenvectors = compute_eigen(pointcloud)
         eigenvalues_pointclouds.append(eigenvalues)
         eigenvectors_pointclouds.append(eigenvectors)
