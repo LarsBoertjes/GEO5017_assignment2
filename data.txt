@@ -1,0 +1,1 @@
+# ID, Label, Sum, Omnivariance, Eigenentropy, Linearity, Planarity, Sphericity, Anisotropy,Relative Height, Area Bounding Box, Area Oriented Bounding Box, Aspect Ratio, Density m2,Density m3, Area Convex Hull, Shape Index , Distance Z, Distance XY

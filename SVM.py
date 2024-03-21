@@ -4,7 +4,6 @@ from sklearn.metrics import f1_score
 import numpy as np
 import sklearn.model_selection as model_selection
 from geometric_features import extract_geometric_features
-from read_data import point_clouds_for_classification
 import matplotlib.pyplot as plt
 
 def dataset():

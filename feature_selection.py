@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def compute_scatter_matrices(features, labels):
     """
     Computes the within-class scatter matrix (Sw) and the between-class scatter matrix (Sb)
