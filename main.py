@@ -12,7 +12,6 @@ feature_names = ['Sum', 'Omnivariance', 'Eigenentropy', 'Linearity',
 
 ID, X, y = data_loading()
 
-
 # plot the distributions of the features
 plot_distributions(X, y, feature_names)
 
@@ -23,15 +22,18 @@ Sw, Sb = compute_scatter_matrices(X, y)
 plot_scatter_matrices(feature_names, Sw, Sb)
 
 # get 4 best features based on forward search
-forward_features_names = forward_search(feature_names, X, y, 4)
+forward_features_names, forward_features = forward_search(feature_names, X, y, 4)
 print(forward_features_names)
 
-
 # get 4 best features based on backward search
-backward_features_names = backward_search(feature_names, X, y, 4)
+backward_features_names, backward_features = backward_search(feature_names, X, y, 4)
 print(backward_features_names)
 
+# plot distributions for best models
+plot_distributions(forward_features, y, forward_features_names)
+
 # use the best features as input for models
+
 
 # plot the learning curves
 

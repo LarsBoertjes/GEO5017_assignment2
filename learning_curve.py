@@ -94,11 +94,11 @@ def plot_learning_curve(classifier_name, training_examples, apparent_errors, tru
 
 
 
-# ID, X_all, y = data_loading()
-# X = X_all[:, [2, 5, 6, 7]]
-#
-# lin = svm.SVC(kernel='linear', C=1)
-# lin2 = svm.SVC(kernel='linear', C=100)
-#
-# training_sizes, svm_apparent_errors, svm_true_errors = learning_curve(X, y, lin2)
-# plot_learning_curve('SVM', training_sizes, svm_apparent_errors, svm_true_errors)
+ID, X_all, y = data_loading()
+X = X_all[:, [2, 5, 6, 7]]
+
+lin = svm.SVC(kernel='linear', C=1)
+lin2 = svm.SVC(kernel='linear', C=100)
+
+training_sizes, svm_apparent_errors, svm_true_errors = learning_curve(X, y, lin2)
+plot_learning_curve('SVM', training_sizes, svm_apparent_errors, svm_true_errors)

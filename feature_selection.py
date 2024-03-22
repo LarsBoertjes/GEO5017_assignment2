@@ -53,6 +53,7 @@ def forward_search(feature_names, features, labels, d):
     """
     current_set_indices = []
     current_set_names = []
+    current_features = None
 
     # fill lists above until specified number of items
     while len(current_set_indices) < d:
@@ -88,7 +89,9 @@ def forward_search(feature_names, features, labels, d):
             current_set_indices.append(best_feature_index)
             current_set_names.append(best_feature_name)
 
-    return current_set_names
+    current_features = features[:, current_set_indices]
+
+    return current_set_names, current_features
 
 
 def backward_search(feature_names, features, labels, d):
@@ -97,6 +100,7 @@ def backward_search(feature_names, features, labels, d):
     """
     current_set_indices = list(range(features.shape[1]))  # Start with all features
     current_set_names = feature_names.copy()
+    current_features = features.copy()
 
     while len(current_set_indices) > d:
         worst_feature_index = None
@@ -121,4 +125,6 @@ def backward_search(feature_names, features, labels, d):
             current_set_indices.remove(worst_feature_index)
             current_set_names.remove(worst_feature_name)
 
-    return current_set_names
+    current_features = features[:, current_set_indices]
+
+    return current_set_names, current_features
