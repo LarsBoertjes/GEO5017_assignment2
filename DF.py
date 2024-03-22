@@ -1,12 +1,12 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 import sklearn.model_selection as model_selection
-from write_data import read_text_data
 import matplotlib.pyplot as plt
 import numpy as np
+from extracting_features import data_loading
 
-# Normal training and evaluation
-X, y = read_text_data('dataset_labels.txt')
+ID, X_all, y = data_loading()
+X = X_all[:, [2, 5, 6, 7]]
 
 X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, train_size=0.60,
                                                                     test_size=0.40, random_state=101)
