@@ -54,25 +54,36 @@ def forward_search(feature_names, features, labels, d):
     current_set_indices = []
     current_set_names = []
 
+    # fill lists above until specified number of items
     while len(current_set_indices) < d:
         best_feature_index = None
         best_feature_name = None
         best_trace_ratio = -float('inf')
 
-        for i, feature in enumerate(features):
+        # iterate over the range of features
+        for i in range(features.shape[1]):
             if i in current_set_indices:
                 continue
 
-            # test adding the current feature to the set
-            Sw, Sb = compute_scatter_matrices([features[j] for j in current_set_indices + [i]], labels)
+            # if index is not yet used, candidate matrix is a column of the values belonging to feature i
+            # if the index is used, we look to this one and the next
+            if not current_set_indices:
+                candidate_feature_matrix = features[:, [i]]
+            else:
+                candidate_feature_matrix = features[:, current_set_indices + [i]]
+
+            # compute scatter matrices between candidate features
+            # compute trace ratio
+            Sw, Sb = compute_scatter_matrices(candidate_feature_matrix, labels)
             trace_ratio = compute_trace_ratio(Sw, Sb)
 
+            # adjust trace ratio
             if trace_ratio > best_trace_ratio:
                 best_trace_ratio = trace_ratio
                 best_feature_index = i
                 best_feature_name = feature_names[i]
 
-        # add the feature that provided the best improvement
+        # add best feature to the list
         if best_feature_index is not None:
             current_set_indices.append(best_feature_index)
             current_set_names.append(best_feature_name)
@@ -84,7 +95,7 @@ def backward_search(feature_names, features, labels, d):
     """
     based on lecture notes 08, p7
     """
-    current_set_indices = list(range(len(features)))
+    current_set_indices = list(range(features.shape[1]))  # Start with all features
     current_set_names = feature_names.copy()
 
     while len(current_set_indices) > d:
@@ -93,9 +104,11 @@ def backward_search(feature_names, features, labels, d):
         best_trace_ratio = -float('inf')
 
         for i in current_set_indices:
+            # Create a test feature matrix excluding the current feature
             test_set_indices = [idx for idx in current_set_indices if idx != i]
-            test_set_features = [features[j] for j in test_set_indices]
+            test_set_features = features[:, test_set_indices]
 
+            # Compute scatter matrices and the trace ratio for this test set
             Sw, Sb = compute_scatter_matrices(test_set_features, labels)
             trace_ratio = compute_trace_ratio(Sw, Sb)
 

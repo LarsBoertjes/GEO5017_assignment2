@@ -43,10 +43,3 @@ def read_text_data(filename):
 
 X, y = read_text_data('dataset_labels.txt')
 
-print(X[:5])
-print(y[:5])
-
-print(len(X))
-print(len(y))
-
-print(len(X[0]))

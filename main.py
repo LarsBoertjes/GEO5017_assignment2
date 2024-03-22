@@ -11,10 +11,10 @@ feature_names = ['Sum', 'Omnivariance', 'Eigenentropy', 'Linearity',
                  'Shape Index', 'Distance Z', 'Distance XY']
 
 ID, X, y = data_loading()
-print(X)
+
 
 # plot the distributions of the features
-# plot_distributions(X, y, feature_names)
+plot_distributions(X, y, feature_names)
 
 # compute within and between scatter matrices
 Sw, Sb = compute_scatter_matrices(X, y)
@@ -25,6 +25,7 @@ plot_scatter_matrices(feature_names, Sw, Sb)
 # get 4 best features based on forward search
 forward_features_names = forward_search(feature_names, X, y, 4)
 print(forward_features_names)
+
 
 # get 4 best features based on backward search
 backward_features_names = backward_search(feature_names, X, y, 4)
