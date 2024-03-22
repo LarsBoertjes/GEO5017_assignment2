@@ -33,3 +33,6 @@ print(backward_features_names)
 
 # use the best features as input for models
 
+# plot the learning curves
+
+# use the best two models to compare
