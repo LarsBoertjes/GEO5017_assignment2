@@ -3,25 +3,32 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 import numpy as np
 import sklearn.model_selection as model_selection
-from geometric_features import extract_geometric_features
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from extracting_features import feature_extraction, data_loading
+import seaborn as sns
 
-ID, X, y = data_loading()
+ID, X_all, y = data_loading()
+X = X_all[:, [2, 5, 6, 7]]
+print(X)
+
 X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, train_size=0.60,
-                                                                    test_size=0.40, random_state=42)
+                                                                    test_size=0.40, random_state=30)
+scaler = StandardScaler()
 
-# rbf = svm.SVC(kernel='rbf', gamma=0.1, C=1.0).fit(X_train, y_train)
-# poly = svm.SVC(kernel='poly', degree=2, gamma=0.1, coef0=1, C=1).fit(X_train, y_train)
-# lin = svm.SVC(kernel='linear', C=1.0).fit(X_train, y_train)
-# sig = svm.SVC(kernel='sigmoid', gamma=0.1, coef0=2, C=1.0).fit(X_train, y_train)
-#
-# poly_pred = poly.predict(X_test)
-# rbf_pred = rbf.predict(X_test)
-# lin_pred = lin.predict(X_test)
-# sig_pred = sig.predict(X_test)
-#
+X_train_std = scaler.fit_transform(X_train)
+X_test_std = scaler.transform(X_test)
+
+rbf = svm.SVC(kernel='rbf', gamma=0.1, C=1.0).fit(X_train, y_train)
+poly = svm.SVC(kernel='poly', degree=2, gamma=0.1, coef0=1, C=1).fit(X_train, y_train)
+lin = svm.SVC(kernel='linear', C=1.0).fit(X_train, y_train)
+sig = svm.SVC(kernel='sigmoid', gamma=0.1, coef0=2, C=1.0).fit(X_train, y_train)
+
+poly_pred = poly.predict(X_test)
+rbf_pred = rbf.predict(X_test)
+lin_pred = lin.predict(X_test)
+sig_pred = sig.predict(X_test)
+
 # rbf_accuracy = accuracy_score(y_test, rbf_pred)
 # rbf_f1 = f1_score(y_test, rbf_pred, average='weighted')
 # print('Accuracy (RBF Kernel):', '%.2f' % (rbf_accuracy * 100))
@@ -42,8 +49,8 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, train_
 # print('Accuracy (SIG):', '%.2f' % (sig_accuracy * 100))
 # print('F1 (SIG):', '%.2f' % (sig_f1 * 100))
 
-gamma_values = [0.001, 0.01, 0.1, 1.0]
-C_values = [0.1, 1.0, 10.0, 100.0]
+gamma_values = [0.001, 0.005, 0.01, 0.5, 0.1, 0.5, 1.0, 5]
+C_values = [0.1, 0.5, 1.0, 5.0, 10.0, 50.0, 100.0, 150]
 deg_values = [1, 2, 3, 4]
 coef0_values = [1, 2, 3, 4]
 
@@ -117,11 +124,11 @@ axs[1, 1].plot(np.arange(len(sig_f1_values)), sig_f1_values, label='F1 Score')
 axs[1, 1].set_title('Sigmoid Kernel')
 axs[1, 1].legend()
 
-# for ax in axs.flat:
-#     ax.set_xlabel('Parameter Combination')
-#     ax.set_ylabel('Performance')
-#     ax.set_xticks(np.arange(len(param_combinations)))
-#     ax.set_xticklabels([f'({gamma}, {C})' for gamma, C in param_combinations], rotation=45, ha='right')
+for ax in axs.flat:
+    ax.set_xlabel('Parameter Combination')
+    ax.set_ylabel('Performance')
+    ax.set_xticks(np.arange(len(param_combinations)))
+    ax.set_xticklabels([f'({gamma}, {C})' for gamma, C in param_combinations], rotation=45, ha='right')
 
 for ax in axs.flat:
     ax.set_xlabel('Parameter Combination')
@@ -132,3 +139,30 @@ for ax in axs.flat:
 
 plt.tight_layout()
 plt.show()
+
+# Reshape the accuracy values to match the gamma_values and C_values dimensions
+rbf_accuracy_matrix = np.array(rbf_accuracy_values).reshape(len(gamma_values), len(C_values))
+poly_accuracy_matrix = np.array(poly_accuracy_values).reshape(len(gamma_values), len(C_values))
+lin_accuracy_matrix = np.array(lin_accuracy_values).reshape(len(gamma_values), len(C_values))
+sig_accuracy_matrix = np.array(sig_accuracy_values).reshape(len(gamma_values), len(C_values))
+
+# Plotting using Seaborn
+fig, axs = plt.subplots(2, 2, figsize=(12, 10))
+
+# RBF Kernel
+sns.heatmap(rbf_accuracy_matrix, ax=axs[0, 0], cmap='viridis', xticklabels=C_values, yticklabels=gamma_values, annot=True, fmt=".2f")
+axs[0, 0].set_title('RBF Kernel - Accuracy')
+
+# Polynomial Kernel
+sns.heatmap(poly_accuracy_matrix, ax=axs[0, 1], cmap='viridis', xticklabels=C_values, yticklabels=gamma_values, annot=True, fmt=".2f")
+axs[0, 1].set_title('Polynomial Kernel - Accuracy')
+
+# Linear Kernel
+sns.heatmap(lin_accuracy_matrix, ax=axs[1, 0], cmap='viridis', xticklabels=C_values, yticklabels=gamma_values, annot=True, fmt=".2f")
+axs[1, 0].set_title('Linear Kernel - Accuracy')
+
+# Sigmoid Kernel
+sns.heatmap(sig_accuracy_matrix, ax=axs[1, 1], cmap='viridis', xticklabels=C_values, yticklabels=gamma_values, annot=True, fmt=".2f")
+axs[1, 1].set_title('Sigmoid Kernel - Accuracy')
+
+plt.tight_layout()
