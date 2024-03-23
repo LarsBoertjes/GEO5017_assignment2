@@ -123,7 +123,7 @@ def plot_normalized_confusion_matrix(confusion_matrix, classifier_name):
 
 def plot_overlap_matrix(overlap_matrix, class_labels):
     plt.figure(figsize=(8, 6))
-    sns.heatmap(overlap_matrix, annot=True, xticklabels=class_labels, yticklabels=class_labels, cmap='vlag')
-    plt.title('Overlap Matrix Between Classes')
+    sns.heatmap(overlap_matrix, annot=True, xticklabels=class_labels, yticklabels=class_labels, cmap='Blues')
+    plt.title('Feature Overlap Sum Matrix Between Classes')
     plt.show()
 
