@@ -95,3 +95,20 @@ def plot_scatter_matrices(features, within_class_matrix, between_class_matrix):
 
     plt.tight_layout()
     plt.show()
+
+
+def plot_normalized_confusion_matrix(confusion_matrix):
+    classes = ['building', 'car', 'fence', 'pole', 'tree']
+
+    cm_normalized = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis]
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+    sns.heatmap(cm_normalized, annot=True, cmap='Blues', ax=ax, square=True,
+                xticklabels=classes, yticklabels=classes)
+
+    ax.set_xlabel('Predicted labels')
+    ax.set_ylabel('True labels')
+    ax.set_title('Normalized Confusion Matrix')
+    plt.xticks(rotation=45)
+    plt.yticks(rotation=45)
+    plt.show()
