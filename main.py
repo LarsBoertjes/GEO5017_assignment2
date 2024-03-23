@@ -1,4 +1,4 @@
-from plotting_features import plot_distributions, plot_scatter_matrices, plot_normalized_confusion_matrix
+from plotting_features import plot_distributions, plot_scatter_matrices, plot_normalized_confusion_matrix, plot_overlap_matrix
 from feature_selection import compute_scatter_matrices, compute_trace_ratio, forward_search, backward_search
 from extracting_features import feature_extraction, data_loading
 from read_data import read_hyperparameters_from_file
@@ -9,6 +9,9 @@ from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
 import numpy as np
+from scipy.spatial.distance import euclidean
+import pandas as pd
+from evaluation import overlap_matrix
 
 # Get all the feature and label arrays
 feature_extraction('data')
@@ -48,9 +51,12 @@ plot_learning_curve('Random Forest', training_sizes, RF_apparent_errors, RF_true
 
 # Use the best two models to compare
 RF_confusion_matrix = confusion_matrix(y_test, RF_predictions)
-plot_normalized_confusion_matrix(RF_confusion_matrix)
+plot_normalized_confusion_matrix(RF_confusion_matrix, 'Random Forest')
 
 # Plot distributions for best models
 # This can be useful to explain misclassification between classes
 plot_distributions(forward_features, y, forward_features_names)
 
+# Overlap matrix to discuss confusion matrix results
+overlap = overlap_matrix(backward_features)
+plot_overlap_matrix(overlap, ['building', 'car', 'fence', 'pole', 'tree'])

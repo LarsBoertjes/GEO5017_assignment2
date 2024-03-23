@@ -5,6 +5,7 @@ import seaborn as sns
 
 def plot_distributions(features, labels, feature_names):
     ranges = [(0,100), (100, 200), (200, 300), (300, 400), (400, 500)]
+    classes = ['building', 'car', 'fence', 'pole', 'tree']
 
     num_features = features.shape[1]
     fig, axs = plt.subplots(5, num_features, figsize=(10*num_features, 20), sharex=False)
@@ -18,20 +19,26 @@ def plot_distributions(features, labels, feature_names):
         feature_name = feature_names[j]
         color = colors[j]
 
+        # Determine overall min and max for the feature for bin edges
         overall_min = np.min(feature)
         overall_max = np.max(feature)
         bin_edges = np.linspace(overall_min, overall_max, num=21)
 
         max_frequency = 0
         for start, end in ranges:
+            # Find the max frequency to set y-axis limits consistently
             subset_frequency, _ = np.histogram(feature[start:end], bins=bin_edges)
             max_frequency = max(max_frequency, max(subset_frequency))
 
         for i, (start, end) in enumerate(ranges):
             frequencies, _ = np.histogram(feature[start:end], bins=bin_edges)
             axs[i, j].hist(feature[start:end], bins=bin_edges, color=color, edgecolor='black')
-            label = np.unique(labels[start:end])[0] if len(np.unique(labels[start:end])) == 1 else 'Mixed'
-            axs[i, j].set_title(f'{feature_name} for label {label}')
+            unique_labels = np.unique(labels[start:end])
+            if len(unique_labels) == 1:
+                label_name = classes[unique_labels[0]]  # Convert label to class name
+            else:
+                label_name = 'Mixed'
+            axs[i, j].set_title(f'{feature_name} for label {label_name}')
             axs[i, j].set_xlabel(feature_name)
             axs[i, j].set_ylabel('Frequency')
             axs[i, j].set_ylim(0, max_frequency + max_frequency * 0.1)
@@ -97,7 +104,7 @@ def plot_scatter_matrices(features, within_class_matrix, between_class_matrix):
     plt.show()
 
 
-def plot_normalized_confusion_matrix(confusion_matrix):
+def plot_normalized_confusion_matrix(confusion_matrix, classifier_name):
     classes = ['building', 'car', 'fence', 'pole', 'tree']
 
     cm_normalized = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis]
@@ -108,7 +115,15 @@ def plot_normalized_confusion_matrix(confusion_matrix):
 
     ax.set_xlabel('Predicted labels')
     ax.set_ylabel('True labels')
-    ax.set_title('Normalized Confusion Matrix')
+    ax.set_title(f'{classifier_name} Normalized Confusion Matrix')
     plt.xticks(rotation=45)
     plt.yticks(rotation=45)
     plt.show()
+
+
+def plot_overlap_matrix(overlap_matrix, class_labels):
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(overlap_matrix, annot=True, xticklabels=class_labels, yticklabels=class_labels, cmap='vlag')
+    plt.title('Overlap Matrix Between Classes')
+    plt.show()
+

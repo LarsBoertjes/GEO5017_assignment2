@@ -65,7 +65,7 @@ print("Best score: ", best_score_set2)
 print("Best parameters:", best_params_set2)
 
 best_hyperparameters = {**best_params_set1, **best_params_set2}
-s
+
 # output best params giving score of 0.95:
 # n_estimators = 75
 # criterion = gini
