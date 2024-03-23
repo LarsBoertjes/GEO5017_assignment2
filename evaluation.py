@@ -45,6 +45,6 @@ def overlap_matrix(features):
             overlap_matrix[i, j] = total_overlap
             overlap_matrix[j, i] = total_overlap  # Symmetric matrix
 
-    np.fill_diagonal(overlap_matrix, 1)
+    np.fill_diagonal(overlap_matrix, np.nan)
 
     return overlap_matrix
