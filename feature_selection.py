@@ -73,7 +73,8 @@ def forward_search(feature_names, features, labels, d):
 
             # compute scatter matrices between candidate features
             # compute trace ratio
-            Sw, Sb = compute_scatter_matrices(candidate_feature_matrix, labels)
+            Sw = compute_within_class_scatter_matrix(candidate_feature_matrix, labels)
+            Sb = compute_between_class_scatter_matrix(candidate_feature_matrix, labels)
             trace_ratio = compute_trace_ratio(Sw, Sb)
 
             # adjust trace ratio
@@ -111,7 +112,8 @@ def backward_search(feature_names, features, labels, d):
             test_set_features = features[:, test_set_indices]
 
             # Compute scatter matrices and the trace ratio for this test set
-            Sw, Sb = compute_scatter_matrices(test_set_features, labels)
+            Sw = compute_within_class_scatter_matrix(test_set_features, labels)
+            Sb = compute_between_class_scatter_matrix(test_set_features, labels)
             trace_ratio = compute_trace_ratio(Sw, Sb)
 
             if trace_ratio > best_trace_ratio:

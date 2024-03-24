@@ -28,11 +28,11 @@ Sw = compute_within_class_scatter_matrix(X, y)
 Sb = compute_between_class_scatter_matrix(X, y)
 
 # Get 4 best features based on forward search
-forward_features_names, forward_features = forward_search(feature_names, X, y, 4)
+forward_features_names, forward_features = forward_search(feature_names, X, y, 4, Sw, Sb)
 print(f"Best features using forward search: ", forward_features_names)
 
 # Get 4 best features based on backward search
-backward_features_names, backward_features = backward_search(feature_names, X, y, 4)
+backward_features_names, backward_features = backward_search(feature_names, X, y, 4, Sw, Sb)
 print(f"Best features using backward search: ", backward_features_names)
 
 # Split the data from the best features
