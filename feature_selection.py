@@ -1,45 +1,43 @@
 import numpy as np
 
 
-def compute_scatter_matrices(features, labels):
-    """
-    Computes the within-class scatter matrix (Sw) and the between-class scatter matrix (Sb)
-    for a given set of features and labels
-    """
+def compute_within_class_scatter_matrix(features, labels):
+    class_labels = np.unique(labels)
+    n_features = features.shape[1]
 
-    # create matrix with each row a sample and each column a feature
-    feature_matrix = np.array(features)
-    num_features = feature_matrix.shape[1]
+    # Initialize the within-class scatter matrix to zeros
+    Sw = np.zeros((n_features, n_features))
 
-    # get unique classes and their indices
-    classes, label_indices = np.unique(labels, return_inverse=True)
-    num_classes = len(classes)
+    # Iterate over each class to compute the within-class scatter matrix
+    for k in class_labels:
+        # Extract the features for class k
+        class_features = features[labels == k]
 
-    # initialize the scatter matrices
-    Sw = np.zeros((num_features, num_features))
-    Sb = np.zeros((num_features, num_features))
+        Sk = np.cov(class_features, rowvar=False)
 
-    overall_mean = np.mean(feature_matrix, axis=0)
+        weight_k = float(class_features.shape[0] / features.shape[0])
 
-    # fill the scatter matrices
-    for i, class_label in enumerate(classes):
-        class_indices = (label_indices == i)
-        class_feature_matrix = feature_matrix[class_indices, :]
-        class_mean = np.mean(class_feature_matrix, axis=0)
-        class_cov = np.cov(class_feature_matrix, rowvar=False)
-        num_samples_in_class = class_feature_matrix.shape[0]
+        Sw += weight_k * Sk
 
-        # within-class scatter matrix
-        Sw += class_cov * num_samples_in_class
+    return Sw
 
-        # between-class scatter matrix
-        mean_diff = (class_mean - overall_mean).reshape(num_features, 1)
-        Sb += num_samples_in_class * (mean_diff @ mean_diff.T)
 
-    Sw /= len(labels)
+def compute_between_class_scatter_matrix(features, labels):
+    class_labels = np.unique(labels)
+    overall_mean = np.mean(features, axis=0)
+    n_features = features.shape[1]
+    Sb = np.zeros((n_features, n_features))
+    N = features.shape[0]
 
-    return Sw, Sb
+    for k in class_labels:
+        class_features = features[labels == k]
+        mean_k = np.mean(class_features, axis=0)
+        Nk = class_features.shape[0]
+        weight_k = Nk / N
+        mean_diff = (mean_k - overall_mean).reshape(n_features, 1)
+        Sb += weight_k * (mean_diff @ mean_diff.T)
 
+    return Sb
 
 def compute_trace_ratio(Sw, Sb):
     trace_Sw = np.trace(Sw)
@@ -75,7 +73,8 @@ def forward_search(feature_names, features, labels, d):
 
             # compute scatter matrices between candidate features
             # compute trace ratio
-            Sw, Sb = compute_scatter_matrices(candidate_feature_matrix, labels)
+            Sw = compute_within_class_scatter_matrix(candidate_feature_matrix, labels)
+            Sb = compute_between_class_scatter_matrix(candidate_feature_matrix, labels)
             trace_ratio = compute_trace_ratio(Sw, Sb)
 
             # adjust trace ratio
@@ -113,7 +112,8 @@ def backward_search(feature_names, features, labels, d):
             test_set_features = features[:, test_set_indices]
 
             # Compute scatter matrices and the trace ratio for this test set
-            Sw, Sb = compute_scatter_matrices(test_set_features, labels)
+            Sw = compute_within_class_scatter_matrix(test_set_features, labels)
+            Sb = compute_between_class_scatter_matrix(test_set_features, labels)
             trace_ratio = compute_trace_ratio(Sw, Sb)
 
             if trace_ratio > best_trace_ratio:
