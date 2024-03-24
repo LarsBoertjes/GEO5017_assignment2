@@ -126,3 +126,48 @@ def plot_overlap_matrix(overlap_matrix, class_labels):
     sns.heatmap(overlap_matrix, annot=True, xticklabels=class_labels, yticklabels=class_labels, cmap='Blues')
     plt.title('Feature Overlap Sum Matrix Between Classes')
     plt.show()
+
+
+def plot_feature_space(features, labels, feature_names):
+    classes = ['building', 'car', 'fence', 'pole', 'tree']
+    class_colors = ['blue', 'red', 'green', 'purple', 'orange']
+
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Create separate scatter plots for each class
+    for i, class_name in enumerate(classes):
+        mask = labels == i
+        x = features[mask, 0]
+        y = features[mask, 1]
+        z = features[mask, 2]
+        ax.scatter(x, y, z, label=class_name, color=class_colors[i])
+
+    ax.set_xlabel(feature_names[0])
+    ax.set_ylabel(feature_names[1])
+    ax.set_zlabel(feature_names[2])
+    ax.set_title('Feature Space 3D Plot')
+    ax.legend()
+
+    plt.show()
+
+def plot_feature_space_2d(features, labels, feature_names):
+    classes = ['building', 'car', 'fence', 'pole', 'tree']
+    class_colors = ['blue', 'red', 'green', 'purple', 'orange']
+
+    fig = plt.figure(figsize=(10, 8))
+    ax = fig.add_subplot(111)
+
+    # Create separate scatter plots for each class
+    for i, class_name in enumerate(classes):
+        mask = labels == i
+        x = features[mask, 0]
+        y = features[mask, 1]
+        ax.scatter(x, y, label=class_name, color=class_colors[i])
+
+    ax.set_xlabel(feature_names[0])
+    ax.set_ylabel(feature_names[1])
+    ax.set_title('Feature Space 2D Plot')
+    ax.legend()
+
+    plt.show()

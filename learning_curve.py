@@ -82,4 +82,5 @@ def plot_learning_curve(classifier_name, training_examples, apparent_errors, tru
     plt.title(f'{classifier_name} Learning Curve')
     plt.legend()
     plt.grid(True)
+    plt.ylim(0, 0.45)
     plt.show()

@@ -1,4 +1,5 @@
-from plotting_features import plot_distributions, plot_normalized_confusion_matrix, plot_overlap_matrix
+from plotting_features import (plot_distributions, plot_feature_space, plot_feature_space_2d,
+                               plot_normalized_confusion_matrix, plot_overlap_matrix)
 from feature_selection import forward_search, backward_search
 from sklearn import svm
 from feature_selection import (forward_search, backward_search, compute_within_class_scatter_matrix,
@@ -11,7 +12,7 @@ from learning_curve import plot_learning_curve, learning_curve
 from sklearn.metrics import confusion_matrix
 import seaborn as sns; sns.set()
 from evaluation import overlap_matrix
-from sklearn.preprocessing import StandardScaler as scaler
+from sklearn.preprocessing import StandardScaler
 
 
 # Get all the feature and label arrays
@@ -62,10 +63,11 @@ plot_learning_curve('Random Forest', RF_training_sizes, RF_apparent_errors, RF_t
 
 # Use the best two models to compare
 # SVM
+scaler = StandardScaler()
 X_train_std = scaler.fit_transform(X_train)
 X_test_std = scaler.transform(X_test)
 
-SVM_model.fit(X_train_std, X_test_std)
+SVM_model.fit(X_train_std, y_train)
 SVM_predictions = SVM_model.predict(X_test_std)
 
 SVM_confusion_matrix = confusion_matrix(y_test, SVM_predictions)
@@ -81,6 +83,10 @@ plot_normalized_confusion_matrix(RF_confusion_matrix, 'Random Forest')
 # Plot distributions for best models
 # This can be useful to explain misclassification between classes
 plot_distributions(forward_features, y, forward_features_names)
+plot_feature_space(forward_features[:, :3], y, forward_features_names[:3])
+plot_feature_space(forward_features[:, 1:], y, forward_features_names[1:])
+# plot_feature_space_2d(forward_features[:, 2:], y, forward_features_names[2:])
+# plot_feature_space_2d(forward_features[:, 1:3], y, forward_features_names[1:3])
 
 # Overlap matrix to discuss confusion matrix results
 overlap = overlap_matrix(backward_features)
