@@ -1,8 +1,8 @@
 import numpy as np
-import os
 from os.path import exists
 from eigen_features import extract_eigen_features
 from geometric_features import extract_geometric_features
+
 
 def feature_extraction(data_path):
     """
@@ -10,7 +10,7 @@ def feature_extraction(data_path):
         data_path: the path to read data
     """
     # check if the current data file exist
-    data_file = 'data.txt'
+    data_file = data_path
     if exists(data_file):
         return
 
@@ -27,8 +27,6 @@ def feature_extraction(data_path):
 
     # combine labels with corresponding rows of data and add IDs
     label_mapping = {'building': 0, 'car': 1, 'fence': 2, 'pole': 3, 'tree': 4}
-
-    num_rows = len(outputs)
 
     for idx, (label, row) in enumerate(zip(labels, outputs)):
         # Calculate ID based on the index with leading zeros

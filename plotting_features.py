@@ -4,7 +4,7 @@ import seaborn as sns
 
 
 def plot_distributions(features, labels, feature_names):
-    ranges = [(0,100), (100, 200), (200, 300), (300, 400), (400, 500)]
+    ranges = [(0, 100), (100, 200), (200, 300), (300, 400), (400, 500)]
     classes = ['building', 'car', 'fence', 'pole', 'tree']
 
     num_features = features.shape[1]
@@ -126,4 +126,3 @@ def plot_overlap_matrix(overlap_matrix, class_labels):
     sns.heatmap(overlap_matrix, annot=True, xticklabels=class_labels, yticklabels=class_labels, cmap='Blues')
     plt.title('Feature Overlap Sum Matrix Between Classes')
     plt.show()
-

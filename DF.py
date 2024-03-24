@@ -2,7 +2,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 import sklearn.model_selection as model_selection
 from extracting_features import data_loading
-from read_data import write_hyperparameters_to_file
+from writing_hyperparameters import write_hyperparameters_to_file
 
 ID, X_all, y = data_loading()
 X = X_all[:, [2, 5, 6, 7]]

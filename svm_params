@@ -1,0 +1,6 @@
+kernel: rbf
+C: 10
+gamma: 2
+max_iter: 50000
+accuracy: 0.94
+f1: 0.9398597862838608

@@ -1,20 +1,19 @@
-from plotting_features import plot_distributions, plot_scatter_matrices, plot_normalized_confusion_matrix, plot_overlap_matrix
-from feature_selection import compute_scatter_matrices, compute_trace_ratio, forward_search, backward_search
+from plotting_features import plot_distributions, plot_normalized_confusion_matrix, plot_overlap_matrix
+from feature_selection import compute_scatter_matrices, forward_search, backward_search
+from sklearn import svm
 from extracting_features import feature_extraction, data_loading
 from read_data import read_hyperparameters_from_file
 import sklearn.model_selection as model_selection
 from sklearn.ensemble import RandomForestClassifier
 from learning_curve import plot_learning_curve, learning_curve
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
-import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 import seaborn as sns; sns.set()
-import numpy as np
-from scipy.spatial.distance import euclidean
-import pandas as pd
 from evaluation import overlap_matrix
+from sklearn.preprocessing import StandardScaler as scaler
+
 
 # Get all the feature and label arrays
-feature_extraction('data')
+feature_extraction('data.txt')
 
 feature_names = ['Sum', 'Omnivariance', 'Eigenentropy', 'Linearity',
                  'Planarity', 'Sphericity', 'Anisotropy', 'Relative Height', 'Area Bounding Box',
@@ -36,20 +35,45 @@ print(f"Best features using backward search: ", backward_features_names)
 
 # Split the data from the best features
 # We use forward here, but backward has the same features
-X_train, X_test, y_train, y_test = model_selection.train_test_split(forward_features, y, train_size=0.6, random_state=0)
+X_train, X_test, y_train, y_test = model_selection.train_test_split(forward_features, y,
+                                                                    train_size=0.6, random_state=101)
 
 # Use the best features as input for models
-RF_params = read_hyperparameters_from_file('RF_params')
+# SVM
+
+
+SVM_params = read_hyperparameters_from_file('svm', X_train, X_test, y_train, y_test)
+SVM_model = svm.SVC(**SVM_params)
+
+
+# Random Forest
+RF_params = read_hyperparameters_from_file('rf', X_train, X_test, y_train, y_test)
 RF_model = RandomForestClassifier(**RF_params)
+
+# Plot the learning curves
+# SVM
+SVM_training_sizes, SVM_apparent_errors, SVM_true_errors = learning_curve(forward_features, y, SVM_model, scaled=True)
+plot_learning_curve('SVM', SVM_training_sizes, SVM_apparent_errors, SVM_true_errors)
+
+# RF learning curve
+RF_training_sizes, RF_apparent_errors, RF_true_errors = learning_curve(forward_features, y, RF_model)
+plot_learning_curve('Random Forest', RF_training_sizes, RF_apparent_errors, RF_true_errors)
+
+# Use the best two models to compare
+# SVM
+X_train_std = scaler.fit_transform(X_train)
+X_test_std = scaler.transform(X_test)
+
+SVM_model.fit(X_train_std, X_test_std)
+SVM_predictions = SVM_model.predict(X_test_std)
+
+SVM_confusion_matrix = confusion_matrix(y_test, SVM_predictions)
+plot_normalized_confusion_matrix(SVM_confusion_matrix, 'SVM')
+
+# RF
 RF_model.fit(X_train, y_train)
 RF_predictions = RF_model.predict(X_test)
 
-# Plot the learning curves
-# RF learning curve
-training_sizes, RF_apparent_errors, RF_true_errors = learning_curve(forward_features, y, RF_model)
-plot_learning_curve('Random Forest', training_sizes, RF_apparent_errors, RF_true_errors)
-
-# Use the best two models to compare
 RF_confusion_matrix = confusion_matrix(y_test, RF_predictions)
 plot_normalized_confusion_matrix(RF_confusion_matrix, 'Random Forest')
 
