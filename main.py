@@ -1,5 +1,5 @@
 from plotting_features import plot_distributions, plot_scatter_matrices, plot_normalized_confusion_matrix, plot_overlap_matrix
-from feature_selection import compute_scatter_matrices, compute_trace_ratio, forward_search, backward_search
+from feature_selection import compute_trace_ratio, forward_search, backward_search, compute_within_class_scatter_matrix, compute_between_class_scatter_matrix
 from extracting_features import feature_extraction, data_loading
 from read_data import read_hyperparameters_from_file
 import sklearn.model_selection as model_selection
@@ -24,7 +24,8 @@ feature_names = ['Sum', 'Omnivariance', 'Eigenentropy', 'Linearity',
 ID, X, y = data_loading()
 
 # Compute within and between scatter matrices
-Sw, Sb = compute_scatter_matrices(X, y)
+Sw = compute_within_class_scatter_matrix(X, y)
+Sb = compute_between_class_scatter_matrix(X, y)
 
 # Get 4 best features based on forward search
 forward_features_names, forward_features = forward_search(feature_names, X, y, 4)
