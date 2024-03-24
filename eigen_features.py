@@ -26,7 +26,7 @@ def compute_eigen(pointcloud):
     return eigenvalues, eigenvectors
 
 
-def compute_eigen_features(eigenvalues, eigenvectors):
+def compute_eigen_features(eigenvalues):
     """
     Input: eigenvalues of object
 
@@ -35,8 +35,6 @@ def compute_eigen_features(eigenvalues, eigenvectors):
     anisotropy, verticality
     """
     e1, e2, e3 = eigenvalues[0], eigenvalues[1], eigenvalues[2]
-    v1, v2, v3 = eigenvectors[0], eigenvectors[1], eigenvectors[2]
-    ez = [0, 0, 1]
 
     _sum = e1 + e2 + e3
 
@@ -76,7 +74,7 @@ def extract_eigen_features():
     _sum, omnivariance, eigenentropy, linearity, planarity, sphericity, anisotropy = [], [], [], [], [], [], []
 
     for eigenvalues in eigenvalues_pointclouds:
-        geometricFeatures = compute_eigen_features(eigenvalues, eigenvectors)
+        geometricFeatures = compute_eigen_features(eigenvalues)
         _sum.append(geometricFeatures[0])
         omnivariance.append(geometricFeatures[1])
         eigenentropy.append(geometricFeatures[2])

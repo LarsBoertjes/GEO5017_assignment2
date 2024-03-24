@@ -1,16 +1,13 @@
-from plotting_features import plot_distributions, plot_scatter_matrices, plot_normalized_confusion_matrix, plot_overlap_matrix
-from feature_selection import compute_trace_ratio, forward_search, backward_search, compute_within_class_scatter_matrix, compute_between_class_scatter_matrix
+from plotting_features import plot_distributions, plot_normalized_confusion_matrix, plot_overlap_matrix
+from feature_selection import (forward_search, backward_search, compute_within_class_scatter_matrix,
+                               compute_between_class_scatter_matrix)
 from extracting_features import feature_extraction, data_loading
 from read_data import read_hyperparameters_from_file
 import sklearn.model_selection as model_selection
 from sklearn.ensemble import RandomForestClassifier
 from learning_curve import plot_learning_curve, learning_curve
-from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
-import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 import seaborn as sns; sns.set()
-import numpy as np
-from scipy.spatial.distance import euclidean
-import pandas as pd
 from evaluation import overlap_matrix
 
 # Get all the feature and label arrays
@@ -28,11 +25,11 @@ Sw = compute_within_class_scatter_matrix(X, y)
 Sb = compute_between_class_scatter_matrix(X, y)
 
 # Get 4 best features based on forward search
-forward_features_names, forward_features = forward_search(feature_names, X, y, 4, Sw, Sb)
+forward_features_names, forward_features = forward_search(feature_names, X, y, 4)
 print(f"Best features using forward search: ", forward_features_names)
 
 # Get 4 best features based on backward search
-backward_features_names, backward_features = backward_search(feature_names, X, y, 4, Sw, Sb)
+backward_features_names, backward_features = backward_search(feature_names, X, y, 4)
 print(f"Best features using backward search: ", backward_features_names)
 
 # Split the data from the best features
