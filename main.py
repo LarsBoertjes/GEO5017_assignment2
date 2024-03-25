@@ -9,7 +9,7 @@ from DF import read_rf_hyperparameters_from_file, max_depth_max_samples
 import sklearn.model_selection as model_selection
 from sklearn.ensemble import RandomForestClassifier
 from learning_curve import plot_learning_curve, learning_curve
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, f1_score, accuracy_score
 import seaborn as sns; sns.set()
 from evaluation import overlap_matrix
 from sklearn.preprocessing import StandardScaler
@@ -52,7 +52,6 @@ max_depth_max_samples(X_train, X_test, y_train, y_test)
 
 RF_params = read_rf_hyperparameters_from_file('rf', X_train, X_test, y_train, y_test)
 RF_model = RandomForestClassifier(**RF_params)
-print("reading is done")
 
 # Plot the learning curves
 # SVM
@@ -71,6 +70,8 @@ X_test_std = scaler.transform(X_test)
 
 SVM_model.fit(X_train_std, y_train)
 SVM_predictions = SVM_model.predict(X_test_std)
+SVM_accuracy = accuracy_score(y_test, SVM_predictions)
+print(f"Support Vector Machine Accuracy: ", SVM_accuracy)
 
 SVM_confusion_matrix = confusion_matrix(y_test, SVM_predictions)
 plot_normalized_confusion_matrix(SVM_confusion_matrix, 'SVM')
@@ -78,6 +79,8 @@ plot_normalized_confusion_matrix(SVM_confusion_matrix, 'SVM')
 # RF
 RF_model.fit(X_train, y_train)
 RF_predictions = RF_model.predict(X_test)
+RF_accuracy = accuracy_score(y_test, RF_predictions)
+print(f"Random Forest Accuracy: ", RF_accuracy)
 
 RF_confusion_matrix = confusion_matrix(y_test, RF_predictions)
 plot_normalized_confusion_matrix(RF_confusion_matrix, 'Random Forest')
