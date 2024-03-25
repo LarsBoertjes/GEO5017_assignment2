@@ -5,7 +5,7 @@ from feature_selection import (forward_search, backward_search, compute_within_c
                                compute_between_class_scatter_matrix)
 from extracting_features import feature_extraction, data_loading
 from SVM import read_svm_hyperparameters_from_file
-from DF import read_rf_hyperparameters_from_file
+from DF import read_rf_hyperparameters_from_file, max_depth_max_samples
 import sklearn.model_selection as model_selection
 from sklearn.ensemble import RandomForestClassifier
 from learning_curve import plot_learning_curve, learning_curve
@@ -48,6 +48,8 @@ SVM_params = read_svm_hyperparameters_from_file('svm', X_train, X_test, y_train,
 SVM_model = svm.SVC(**SVM_params)
 
 # Random Forest
+max_depth_max_samples(X_train, X_test, y_train, y_test)
+
 RF_params = read_rf_hyperparameters_from_file('rf', X_train, X_test, y_train, y_test)
 RF_model = RandomForestClassifier(**RF_params)
 print("reading is done")
