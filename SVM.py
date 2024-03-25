@@ -141,6 +141,14 @@ def initial_test(X_train, X_test, y_train, y_test):
     axs[0, 0].set_ylabel('Accuracy', fontsize=20, fontweight='bold')
     axs[1, 0].set_ylabel('F1', fontsize=20, fontweight='bold')
 
+    # Set labels on the others
+    for i in range(1, 4):
+        axs[0, i].set_xlabel('C', fontsize=12)
+        axs[0, i].set_ylabel('Gamma', fontsize=12)
+        axs[1, i].set_xlabel('C', fontsize=12)
+        axs[1, i].set_ylabel('Gamma', fontsize=12)
+
+
     plt.tight_layout()
     plt.show()
 
@@ -155,19 +163,19 @@ def SVM(X_train, X_test, y_train, y_test, standardized=True):
         initial_test(X_train, X_test, y_train, y_test)
         initial_test(X_train_std, X_test_std, y_train, y_test)
         parameters = hyper_parameter_tuning(X_train_std, X_test_std, y_train, y_test)[1]
-        write_hyperparameters_to_file(parameters, 'svm_params')
+        write_hyperparameters_to_file(parameters, 'svm_params.txt')
 
     else:
         parameters = hyper_parameter_tuning(X_train, X_test, y_train, y_test)[1]
-        write_hyperparameters_to_file(parameters, 'svm_params')
+        write_hyperparameters_to_file(parameters, 'svm_params.txt')
 
 
 def read_svm_hyperparameters_from_file(model, X_train, X_test, y_train, y_test):
     hyperparameters = {}
     if model == 'svm':
-        if not exists('svm_params'):
+        if not exists('svm_params.txt'):
             SVM(X_train, X_test, y_train, y_test, True)
-        file_path = 'svm_params'
+        file_path = 'svm_params.txt'
 
 
     with open(file_path, "r") as file:

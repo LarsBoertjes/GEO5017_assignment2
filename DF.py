@@ -73,16 +73,16 @@ def hyper_parameter_tuning(X_train, X_test, y_train, y_test):
 
 def RF(X_train, X_test, y_train, y_test):
     parameters = hyper_parameter_tuning(X_train, X_test, y_train, y_test)
-    write_hyperparameters_to_file(parameters, 'RF_params')
+    write_hyperparameters_to_file(parameters, 'RF_params.txt')
 
 
 def read_rf_hyperparameters_from_file(model, X_train, X_test, y_train, y_test):
     hyperparameters = {}
 
     if model == 'rf':
-        if not exists('RF_params'):
+        if not exists('RF_params.txt'):
             RF(X_train, X_test, y_train, y_test)
-        file_path = 'Rf_params'
+        file_path = 'Rf_params.txt'
 
 
     with open(file_path, "r") as file:
