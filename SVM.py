@@ -162,7 +162,9 @@ def SVM(X_train, X_test, y_train, y_test, standardized=True):
         X_test_std = scaler.transform(X_test)
         initial_test(X_train, X_test, y_train, y_test)
         initial_test(X_train_std, X_test_std, y_train, y_test)
-        parameters = hyper_parameter_tuning(X_train_std, X_test_std, y_train, y_test)[1]
+        all_parameters = hyper_parameter_tuning(X_train_std, X_test_std, y_train, y_test)
+        print(all_parameters)
+        parameters = all_parameters[1]
         write_hyperparameters_to_file(parameters, 'svm_params.txt')
 
     else:
