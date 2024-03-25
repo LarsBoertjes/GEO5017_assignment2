@@ -1,7 +1,7 @@
-n_estimators: 75
+n_estimators: 50
 criterion: gini
 max_features: 0.1
 bootstrap: True
-max_samples: 0.4
+max_samples: 0.7
 max_depth: 6
-min_samples_split: 2
+min_samples_split: 5

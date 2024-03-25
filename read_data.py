@@ -1,7 +1,6 @@
 import numpy as np
-from os.path import exists
 import os
-from SVM import SVM
+
 
 def get_pointclouds():
     def get_label(index):
@@ -72,37 +71,5 @@ def read_point_clouds(folder_path):
     return point_clouds, labels
 
 
-def read_hyperparameters_from_file(model, X_train, X_test, y_train, y_test):
-    hyperparameters = {}
-    if model == 'svm':
-        if not exists('svm_params'):
-            SVM(X_train, X_test, y_train, y_test)
-        file_path = 'svm_params'
 
-
-    if model == 'rf':
-        if not exists('RF_params'):
-            pass
-            # code to run rf params
-        file_path = 'Rf_params'
-
-
-    with open(file_path, "r") as file:
-        for line in file:
-            key, value = line.strip().split(": ", 1)
-            if key.lower() not in ['accuracy', 'f1']:
-                try:
-                    hyperparameters[key] = int(value)
-                except ValueError:
-                    try:
-                        hyperparameters[key] = float(value)
-                    except ValueError:
-                        # Attempt to interpret the value as a boolean if it matches 'True' or 'False'
-                        if value == 'True':
-                            hyperparameters[key] = True
-                        elif value == 'False':
-                            hyperparameters[key] = False
-                        else:
-                            hyperparameters[key] = value
-    return hyperparameters
 

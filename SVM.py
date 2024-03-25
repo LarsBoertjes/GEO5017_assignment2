@@ -5,6 +5,7 @@ from writing_hyperparameters import write_hyperparameters_to_file
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from os.path import exists
 
 
 def hyper_parameter_tuning(X_train, X_test, y_train, y_test):
@@ -159,3 +160,32 @@ def SVM(X_train, X_test, y_train, y_test, standardized=True):
     else:
         parameters = hyper_parameter_tuning(X_train, X_test, y_train, y_test)[1]
         write_hyperparameters_to_file(parameters, 'svm_params')
+
+
+def read_svm_hyperparameters_from_file(model, X_train, X_test, y_train, y_test):
+    hyperparameters = {}
+    if model == 'svm':
+        if not exists('svm_params'):
+            SVM(X_train, X_test, y_train, y_test, True)
+        file_path = 'svm_params'
+
+
+    with open(file_path, "r") as file:
+        for line in file:
+            key, value = line.strip().split(": ", 1)
+            if key.lower() not in ['accuracy', 'f1']:
+                try:
+                    hyperparameters[key] = int(value)
+                except ValueError:
+                    try:
+                        hyperparameters[key] = float(value)
+                    except ValueError:
+                        # Attempt to interpret the value as a boolean if it matches 'True' or 'False'
+                        if value == 'True':
+                            hyperparameters[key] = True
+                        elif value == 'False':
+                            hyperparameters[key] = False
+                        else:
+                            hyperparameters[key] = value
+
+    return hyperparameters

@@ -1,11 +1,11 @@
 from plotting_features import (plot_distributions, plot_feature_space, plot_feature_space_2d,
                                plot_normalized_confusion_matrix, plot_overlap_matrix)
-from feature_selection import forward_search, backward_search
 from sklearn import svm
 from feature_selection import (forward_search, backward_search, compute_within_class_scatter_matrix,
                                compute_between_class_scatter_matrix)
 from extracting_features import feature_extraction, data_loading
-from read_data import read_hyperparameters_from_file
+from SVM import read_svm_hyperparameters_from_file
+from DF import read_rf_hyperparameters_from_file
 import sklearn.model_selection as model_selection
 from sklearn.ensemble import RandomForestClassifier
 from learning_curve import plot_learning_curve, learning_curve
@@ -44,13 +44,13 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(forward_feat
 
 # Use the best features as input for models
 # SVM
-SVM_params = read_hyperparameters_from_file('svm', X_train, X_test, y_train, y_test)
+SVM_params = read_svm_hyperparameters_from_file('svm', X_train, X_test, y_train, y_test)
 SVM_model = svm.SVC(**SVM_params)
 
-
 # Random Forest
-RF_params = read_hyperparameters_from_file('rf', X_train, X_test, y_train, y_test)
+RF_params = read_rf_hyperparameters_from_file('rf', X_train, X_test, y_train, y_test)
 RF_model = RandomForestClassifier(**RF_params)
+print("reading is done")
 
 # Plot the learning curves
 # SVM
