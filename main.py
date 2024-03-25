@@ -14,9 +14,9 @@ import seaborn as sns; sns.set()
 from evaluation import overlap_matrix
 from sklearn.preprocessing import StandardScaler
 
-
 # Get all the feature and label arrays
 feature_extraction('data.txt')
+
 
 feature_names = ['Sum', 'Omnivariance', 'Eigenentropy', 'Linearity',
                  'Planarity', 'Sphericity', 'Anisotropy', 'Relative Height', 'Area Bounding Box',

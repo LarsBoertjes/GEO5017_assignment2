@@ -8,12 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-ID, X_all, y = data_loading()
-X = X_all[:, [2, 5, 6, 7]]
-
-X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, train_size=0.60,
-                                                                    test_size=0.40, random_state=101)
-
 def hyper_parameter_tuning(X_train, X_test, y_train, y_test):
     # hyperparameters ranges
     n_estimators = [1, 2, 5, 10, 25, 50, 75, 100, 125, 150]

@@ -9,23 +9,27 @@ def feature_extraction(data_path):
     Prepare features of the input point cloud objects
         data_path: the path to read data
     """
-    # check if the current data file exist
+    # Check if the current data file exists
     data_file = data_path
-    if exists(data_file):
+    if not exists(data_file):
+        print(f"{data_file} not found. Generating the file...")
+        generate_data_file(data_file)
+    else:
         return
 
-    # extract the features
+
+def generate_data_file(data_file):
     data = extract_eigen_features()[0]
     data.extend(extract_geometric_features())
     labels = extract_eigen_features()[1]
 
-    # transform the output data
+    # Transform the output data
     outputs = np.transpose(np.array(data).astype(np.float32))
 
-    # create a list to store formatted data with labels
+    # Create a list to store formatted data with labels
     formatted_data = []
 
-    # combine labels with corresponding rows of data and add IDs
+    # Combine labels with corresponding rows of data and add IDs
     label_mapping = {'building': 0, 'car': 1, 'fence': 2, 'pole': 3, 'tree': 4}
 
     for idx, (label, row) in enumerate(zip(labels, outputs)):
@@ -34,9 +38,11 @@ def feature_extraction(data_path):
         formatted_row = [ID, label_mapping[label]] + list(row)
         formatted_data.append(formatted_row)
 
+    # Convert formatted_data to a NumPy array
+    formatted_data_array = np.array(formatted_data)
+
     # convert formatted_data to a NumPy array
     formatted_data_array = np.array(formatted_data)
-    print(formatted_data)
 
     # write the output to a local file
     data_header = ('ID, Label, Sum, Omnivariance, Eigenentropy, Linearity, Planarity, Sphericity, Anisotropy,'
