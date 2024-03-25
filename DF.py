@@ -4,6 +4,9 @@ import sklearn.model_selection as model_selection
 from extracting_features import data_loading
 from writing_hyperparameters import write_hyperparameters_to_file
 from os.path import exists
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 ID, X_all, y = data_loading()
 X = X_all[:, [2, 5, 6, 7]]
@@ -69,6 +72,47 @@ def hyper_parameter_tuning(X_train, X_test, y_train, y_test):
     best_hyperparameters = {**best_params_set1, **best_params_set2}
 
     return best_hyperparameters
+
+def max_depth_max_samples(X_train, X_test, y_train, y_test):
+    # this function shows how max_depth and max_samples operate
+    # the parameters used
+    max_depth = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+    max_samples = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+
+    # Initialize matrices to store scores
+    accuracy_matrix = np.zeros((len(max_depth), len(max_samples)))
+    f1_matrix = np.zeros((len(max_depth), len(max_samples)))
+
+    for i, depth in enumerate(max_depth):
+        for j, samples in enumerate(max_samples):
+            RF = RandomForestClassifier(n_estimators=50, criterion='gini', max_features=0.1,
+                                        bootstrap=True, max_samples=samples, max_depth=depth,
+                                        min_samples_split=5)
+            RF.fit(X_train, y_train)
+            predictions = RF.predict(X_test)
+
+            accuracy_matrix[i, j] = accuracy_score(y_test, predictions)
+            f1_matrix[i, j] = f1_score(y_test, predictions, average='weighted')
+
+    # Plotting
+    fig, axs = plt.subplots(1, 2, figsize=(16, 6))
+
+    # Accuracy Heatmap
+    sns.heatmap(accuracy_matrix, ax=axs[0], annot=True, fmt=".2f", cmap='viridis',
+                xticklabels=max_samples, yticklabels=max_depth)
+    axs[0].set_title('Accuracy Score')
+    axs[0].set_xlabel('max_samples')
+    axs[0].set_ylabel('max_depth')
+
+    # F1 Score Heatmap
+    sns.heatmap(f1_matrix, ax=axs[1], annot=True, fmt=".2f", cmap='viridis',
+                xticklabels=max_samples, yticklabels=max_depth)
+    axs[1].set_title('F1 Score')
+    axs[1].set_xlabel('max_samples')
+    axs[1].set_ylabel('max_depth')
+
+    plt.tight_layout()
+    plt.show()
 
 
 def RF(X_train, X_test, y_train, y_test):
